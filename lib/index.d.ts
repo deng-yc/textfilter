@@ -1,5 +1,4 @@
-declare const code: string;
-declare class TextFilter {
+export declare class TextFilter {
     private tree;
     private words;
     constructor();

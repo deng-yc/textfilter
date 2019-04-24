@@ -2,7 +2,7 @@
 
 const code = String.fromCharCode(0x1e);
 
-class TextFilter {
+export class TextFilter {
     private tree = {}
     private words = {};
     constructor() {
