@@ -1,0 +1,13 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "umd",
+        "target": "es5",
+        "experimentalDecorators": true,
+        "declaration": true,
+        "declarationDir": "./lib",
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "importHelpers": true
+    }
+}
