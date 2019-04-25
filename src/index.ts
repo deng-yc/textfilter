@@ -2,7 +2,7 @@
 
 const code = String.fromCharCode(0x1e);
 
-export class TextFilter {
+class TextFilter {
     private tree = {}
     private words = {};
     constructor() {
@@ -10,13 +10,42 @@ export class TextFilter {
     }
 
     addWord(word) {
+        if(this.words[word]){
+            return false;
+        }
         var tree: any = this.tree || {};
         for (var i = 0; i < word.length; i++) {
-            if (!tree[word[i]]) tree[word[i]] = {}
-            tree = tree[word[i]]
+            var c=word[i];
+            if (!tree[c]) {
+                tree[c] = {
+                    count:0
+                }
+            }
+            tree[c].count+=1;
+            tree = tree[c];
         }
         tree.isEnd = true
         this.words[word] = true;
+        return this.tree;
+    }
+    removeWord(word:string){
+        if(!this.words[word]){
+            return false;
+        }
+        delete this.words[word];
+        var tree:any=this.tree||{};
+        for(var i=0;i<word.length;i++){
+            var c=word[i];
+            if(!tree[c]){
+                break;
+            }
+            tree[c].count -= 1;
+            if(tree[c].count==0){
+                delete tree[c];
+            }
+            tree = tree[c];
+        }
+        return this.tree;
     }
 
     private find(str, onMatch: (word, str) => boolean) {
