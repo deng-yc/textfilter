@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/deng-yc/textfilter/issues"
   },
-  "homepage": "https://github.com/deng-yc/textfilter#readme"
+  "homepage": "https://github.com/deng-yc/textfilter#readme",
+  "devDependencies": {
+    "@types/node": "^11.13.7"
+  }
 }

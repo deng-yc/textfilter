@@ -1,7 +1,7 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "module": "umd",
+        "module": "none",
         "target": "es5",
         "experimentalDecorators": true,
         "declaration": true,
