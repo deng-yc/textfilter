@@ -118,57 +118,61 @@
          * @param str 字符串
          * @param onMatch 匹配上时的回调
          */
-        private find(str, onMatch: (word, str) => boolean) {
-            var next_tree = this.tree;
-            var isFound = false;
+        private find(str, options?: {
+            isTest?: boolean;
+            onReplace?: (words, str) => string;
+        }) {
+            if (!options) {
+                options = {
+                    onReplace: (found_words, str_1) => {
+                        var reg = new RegExp(found_words.join('|'), 'g');
+                        str_1 = str_1.replace(reg, (a) => {
+                            return a.replace(/./g, code);
+                        });
+                        return str_1
+                    }
+                };
+            }
+
+            var next_node = this.tree;
+            var matchs = [];
             for (var i = 0; i < str.length; i++) {
                 if (str[i] == code) {
                     continue;
                 }
-                var is_found = false;
                 var skip = 0;
-                var temp = '';
+                var found_words = [];
+                var found_str = "";
                 for (var j = i; j < str.length; j++) {
                     var char = str[j];
-                    if (!next_tree[char]) {
-                        is_found = false;
+                    var tree_node = next_node[char];
+                    if (!tree_node) {
                         skip = j - i;
-                        next_tree = this.tree;
+                        next_node = this.tree;
                         break;
                     }
-                    temp = temp + char
-
-                    if (next_tree[char].isEnd) {
-                        is_found = true
-                        skip = j - i
-                        break
+                    found_str = found_str + char;
+                    if (tree_node.isEnd) {
+                        found_words.unshift(found_str);
+                        if (tree_node.count == 1 || options.isTest) {
+                            skip = j - i;
+                            next_node = this.tree;
+                            break;
+                        }
                     }
-                    next_tree = next_tree[char];
+                    next_node = tree_node;
                 }
                 if (skip > 1) {
                     i += skip - 1;
                 }
-                if (is_found) {
-                    isFound = true;
-                    var result = onMatch(temp, str);
-                    if (result === true) {
-                        return {
-                            isFound,
-                            str
-                        };
-                    }
-                    else if (result !== false) {
-                        str = result;
-                    } else {
-                        var reg = new RegExp(temp, 'g');
-                        str = str.replace(reg, (a) => {
-                            return a.replace(/./g, code);
-                        });
-                    }
+                if (found_words.length > 0) {
+                    matchs.push(...found_words);
+                    str = options.onReplace(found_words, str);
                 }
             }
             return {
-                isFound,
+                isFound: matchs.length > 0,
+                matchs,
                 str
             };
         }
@@ -178,35 +182,31 @@
          * @param str 要匹配的字符串
          */
         test(str) {
-            return this.find(str, (word) => {
-                return true;
-            }).isFound;
+            return this.find(str, { isTest: true }).isFound;
         }
 
         /**
-         * 查询所有命中的关键字,(如果关键词存在包含关系,只会命中短的关键字)
+         * 查询所有命中的关键字
          * @param str
          */
         match(str) {
-            var matchs = [];
-            this.find(str, (w) => {
-                matchs.push(w);
-                return false;
-            });
-            return matchs;
+            return this.find(str).matchs;
         }
         /**
-         * 替换命中的关键字为指定符号, (如果关键词存在包含关系,只会命中短的关键字)
+         * 替换命中的关键字为指定符号
          * @param str
          * @param char
          */
-        replace(str, char) {
-            return this.find(str, (w, str) => {
-                var reg = new RegExp(w, 'g');
-                return str.replace(reg, (a) => {
-                    return a.replace(/./g, char);
-                });
-            }).str;
+        replace(str, char = "*") {
+            var m = this.find(str, {
+                onReplace: (ws, str) => {
+                    var reg = new RegExp(ws.join('|'), 'g');
+                    return str.replace(reg, (a) => {
+                        return a.replace(/./g, char);
+                    });
+                }
+            });
+            return m.str
         }
     }
     exports.TextFilter = TextFilter;
