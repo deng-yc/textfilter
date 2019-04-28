@@ -12,7 +12,6 @@
         factory(null, window);
     }
 })((require, exports) => {
-    const code = String.fromCharCode(0x1e);
     class TextFilter {
         private tree = {}
         private words = {};
@@ -120,24 +119,19 @@
          */
         private find(str, options?: {
             isTest?: boolean;
-            onReplace?: (words, str) => string;
+            replaceChar?: string
         }) {
             if (!options) {
-                options = {
-                    onReplace: (found_words, str_1) => {
-                        var reg = new RegExp(found_words.join('|'), 'g');
-                        str_1 = str_1.replace(reg, (a) => {
-                            return a.replace(/./g, code);
-                        });
-                        return str_1
-                    }
-                };
+                options = {};
+            }
+            if (!options.replaceChar) {
+                options.replaceChar = String.fromCharCode(0x1e)
             }
 
             var next_node = this.tree;
             var matchs = [];
             for (var i = 0; i < str.length; i++) {
-                if (str[i] == code) {
+                if (str[i] == options.replaceChar) {
                     continue;
                 }
                 var skip = 0;
@@ -167,7 +161,10 @@
                 }
                 if (found_words.length > 0) {
                     matchs.push(...found_words);
-                    str = options.onReplace(found_words, str);
+                    var reg = new RegExp(found_words.join('|'), 'g');
+                    str = str.replace(reg, (a) => {
+                        return a.replace(/./g, options.replaceChar);
+                    });
                 }
             }
             return {
@@ -199,12 +196,7 @@
          */
         replace(str, char = "*") {
             var m = this.find(str, {
-                onReplace: (ws, str) => {
-                    var reg = new RegExp(ws.join('|'), 'g');
-                    return str.replace(reg, (a) => {
-                        return a.replace(/./g, char);
-                    });
-                }
+                replaceChar: char
             });
             return m.str
         }
