@@ -128,7 +128,7 @@
                 options.replaceChar = String.fromCharCode(0x1e)
             }
 
-            var tree_node:any = this.tree;
+            var tree_node = this.tree;
             var matchs = [];
             for (var i = 0; i < str.length; i++) {
                 if (str[i] == options.replaceChar) {
@@ -139,22 +139,22 @@
                 var found_str = "";
                 for (var j = i; j < str.length; j++) {
                     var char = str[j];
-                    var tree_node = tree_node[char];
-                    if (!tree_node) {
+                    var current_node = tree_node[char];
+                    if (!current_node) {
                         skip = j - i;
                         tree_node = this.tree;
                         break;
                     }
                     found_str = found_str + char;
-                    if (tree_node.isEnd) {
+                    if (current_node.isEnd) {
                         found_words.unshift(found_str);
-                        if (tree_node.$ == 1 || options.isTest) {
+                        if (current_node.$ == 1 || options.isTest) {
                             skip = j - i;
                             tree_node = this.tree;
                             break;
                         }
                     }
-                    tree_node = tree_node;
+                    tree_node = current_node;
                 }
                 if (skip > 1) {
                     i += skip - 1;
