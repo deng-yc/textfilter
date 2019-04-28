@@ -77,10 +77,10 @@
                 var c = word[i];
                 if (!tree_node[c]) {
                     tree_node[c] = {
-                        $: 0
+                        _$: 0
                     }
                 }
-                tree_node[c].$ += 1;
+                tree_node[c]._$ += 1;
                 tree_node = tree_node[c];
             }
             tree_node.isEnd = true
@@ -103,8 +103,8 @@
                 if (!tree_node[c]) {
                     break;
                 }
-                tree_node[c].$ -= 1;
-                if (tree_node[c].$ == 0) {
+                tree_node[c]._$ -= 1;
+                if (tree_node[c]._$ == 0) {
                     delete tree_node[c];
                 }
                 tree_node = tree_node[c];
@@ -148,7 +148,7 @@
                     found_str = found_str + char;
                     if (current_node.isEnd) {
                         found_words.unshift(found_str);
-                        if (current_node.$ == 1 || options.isTest) {
+                        if (current_node._$ == 1 || options.isTest) {
                             skip = j - i;
                             tree_node = this.tree;
                             break;

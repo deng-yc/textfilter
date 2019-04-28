@@ -1,6 +1,6 @@
 {
-  "name": "textfilter",
-  "version": "1.0.0",
+  "name": "textfilter2",
+  "version": "1.0.1",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
