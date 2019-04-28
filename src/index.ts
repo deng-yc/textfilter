@@ -77,10 +77,10 @@
                 var c = word[i];
                 if (!tree[c]) {
                     tree[c] = {
-                        count: 0
+                        $: 0
                     }
                 }
-                tree[c].count += 1;
+                tree[c].$ += 1;
                 tree = tree[c];
             }
             tree.isEnd = true
@@ -103,8 +103,8 @@
                 if (!tree[c]) {
                     break;
                 }
-                tree[c].count -= 1;
-                if (tree[c].count == 0) {
+                tree[c].$ -= 1;
+                if (tree[c].$ == 0) {
                     delete tree[c];
                 }
                 tree = tree[c];
@@ -148,7 +148,7 @@
                     found_str = found_str + char;
                     if (tree_node.isEnd) {
                         found_words.unshift(found_str);
-                        if (tree_node.count == 1 || options.isTest) {
+                        if (tree_node.$ == 1 || options.isTest) {
                             skip = j - i;
                             next_node = this.tree;
                             break;
